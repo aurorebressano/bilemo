@@ -10,7 +10,7 @@ Symfony CLI</code>
 <h3>Installation et configuration</h3>
 
 <code>Télécharger ou cloner le repository (en ligne de commande: 'git clone https://github.com/aurorebressano/bilemo.git')
-Dupliquer et renommer le fichier .env en .env.local et modifier les infos nécessaires (notamment DATABASE_URL)
+Modifier les infos nécessaires dans fichier .env (notamment DATABASE_URL)
 <br>
 En ligne de commande, jouer:
 ->'symfony composer install --optimize-autoloader' (Installer les dépendances nécessaires à l'exécution de l'application)
