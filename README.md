@@ -23,8 +23,7 @@ Cliquer sur les fichiers suivants à la racine du projet:
 
 <h3>Identifiants de connexion à des fins de test</h3>
 
-<code>
-username: 'coolphone@free.fr' 
+<code>username: 'coolphone@free.fr' 
 password: 'test'
 <br>
 Sur l'URL /api/, l'apiplatform s'affiche.
@@ -48,6 +47,5 @@ password: test
 </code>
 
 <h3> La documentation </h3>
-<code>
-Sur l'url /api/docs se trouvent les indications pour bien renseigner et comprendre les entités sérializées et mises à disposition via l'API.      
+<code>Sur l'url /api/docs se trouvent les indications pour bien renseigner et comprendre les entités sérializées et mises à disposition via l'API.      
 </code>
