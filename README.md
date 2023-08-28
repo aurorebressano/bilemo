@@ -49,3 +49,6 @@ password: test
 <h3> La documentation </h3>
 <code>Sur l'url /api/docs se trouvent les indications pour bien renseigner et comprendre les entités sérializées et mises à disposition via l'API.      
 </code>
+
+Lien vers l'analyse codacy (note A):
+https://app.codacy.com/gh/aurorebressano/bilemo/dashboard
