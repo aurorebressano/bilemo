@@ -21,20 +21,44 @@ security:
         dev:
             pattern: ^/_(profiler|wdt)
             security: false
+        # activate different ways to authenticate
+        # login:
+        #     pattern:  ^/api/auth
+        #     stateless: true
+        #     json_login:
+        #         check_path: /api/auth
+        #         success_handler: lexik_jwt_authentication.handler.authentication_success
+        #         failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        # api:
+        #     pattern:   ^/api
+        #     stateless: true
+        login:
+            pattern: ^/api/auth
+            stateless: true
+            json_login:
+                check_path: /api/auth
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+        api:
+            pattern:   ^/api
+            stateless: true
+            jwt: ~
         main:
             stateless: true
             provider: users
             json_login:
                 check_path: auth # The name in routes.yaml is enough for mapping
-                username_path: email
+                username_path: username
                 password_path: password
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
             jwt: ~
 
+
     access_control:
-        - { path: ^/$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
-        - { path: ^/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
+        - { path: ^/api/$, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI
+        - { path: ^/api/docs, roles: PUBLIC_ACCESS } # Allows accessing the Swagger UI docs
         - { path: ^/api/auth, roles: PUBLIC_ACCESS }
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 

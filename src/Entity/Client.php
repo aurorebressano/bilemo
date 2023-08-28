@@ -12,14 +12,12 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
-#[ApiResource(
-    operations: [
-        new Get()
-    ]
-)]
+#[ApiResource(operations:[])]
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
-class Client
+class Client implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -30,16 +28,47 @@ class Client
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: 'Le nom doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le nom doit contenir moins de {{ limit }} caractères',
+    )]
     private ?string $CompanyName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "L'email doit contenir au moins {{ limit }} caractères",
+        maxMessage: "L'email doit contenir moins de {{ limit }} caractères",
+    )]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "Le login doit contenir au moins {{ limit }} caractères",
+        maxMessage: "Le login doit contenir moins de {{ limit }} caractères",
+    )]
     private ?string $login = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: 'Votre mot de passe doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Votre mot de passe doit contenir moins de {{ limit }} caractères',
+    )]
     private ?string $password = null;
+
+    #[ORM\Column(type: 'json')]
+    private $roles = [];
 
     #[ORM\OneToMany(mappedBy: 'isClientOf', targetEntity: User::class)]
     private Collection $users;
@@ -142,5 +171,42 @@ class Client
         }
 
         return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     *
+     * @return void
+     */
+    public function eraseCredentials()
+    {
+
+    }
+
+    /**
+     * Returns the identifier for this user (e.g. username or email address).
+     */
+    public function getUserIdentifier(): string
+    {
+        return $this->email;
     }
 }

@@ -10,12 +10,25 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\ApiResource;
+use App\Controller\ClientController;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Security\Core\Security;
 
 #[ApiResource(
+    normalizationContext: ['groups' => ['read']],
+    denormalizationContext: ['groups' => ['write']],
     operations: [
-        new Get(),
-        new Delete(),
-        new GetCollection(),
+        new Get(
+            security: "object.isClientOf == user"
+        ),
+        new Delete(
+            security: "object.isClientOf == user"
+        ),
+        new GetCollection(
+            name:"toto",
+            uriTemplate:"/users",
+            controller: ClientController::class
+        ),
         new Post()
     ]
 )]
@@ -23,26 +36,59 @@ use ApiPlatform\Metadata\ApiResource;
 #[ORM\Table(name: '`user`')]
 class User
 {
+    private ?Security $security = null;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('read')]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups('read')]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: 'Le nom doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le nom doit contenir moins de {{ limit }} caractères',
+    )]
+    #[Groups(['read', 'write'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: 'Le prénom doit contenir au moins {{ limit }} caractères',
+        maxMessage: 'Le prénom doit contenir moins de {{ limit }} caractères',
+    )]
+    #[Groups(['read', 'write'])]
     private ?string $firstName = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 2,
+        max: 255,
+        minMessage: "L'e-mail doit contenir au moins {{ limit }} caractères",
+        maxMessage: "L'e-mail doit contenir moins de {{ limit }} caractères",
+    )]
+    #[Groups(['read', 'write'])]
     private ?string $email = null;
 
     #[ORM\ManyToOne(inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Client $isClientOf = null;
+    #[Groups('read')]
+    public ?Client $isClientOf = null;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {

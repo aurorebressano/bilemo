@@ -13,9 +13,10 @@ use DateTimeImmutable;
 
 class AppFixtures extends Fixture
 {
-    public function __construct(private ClientRepository $clientRepository)
+    public function __construct(private ClientRepository $clientRepository, private UserPasswordHasherInterface $userPasswordHasherInterface)
     {
         $this->clientRepository = $clientRepository;
+        $this->userPasswordHasherInterface = $userPasswordHasherInterface;
     }
 
     public function load(ObjectManager $manager): void
@@ -187,7 +188,7 @@ class AppFixtures extends Fixture
             ->setCompanyName($data['companyName'])
             ->setEmail($data['email'])
             ->setLogin($data['login'])
-            ->setPassword($data['password']);
+            ->setPassword($this->userPasswordHasherInterface->hashPassword($client, $data['password']));
 
             $manager->persist($client);
         }
