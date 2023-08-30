@@ -21,7 +21,7 @@ security:
         dev:
             pattern: ^/_(profiler|wdt)
             security: false
-        # activate different ways to authenticate
+        #activate different ways to authenticate
         # login:
         #     pattern:  ^/api/auth
         #     stateless: true
